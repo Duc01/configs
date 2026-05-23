@@ -57,9 +57,25 @@ case ${1,,} in
     toolbox run -c $TOOLBOX_NAME wget https://update.code.visualstudio.com/latest/linux-rpm-x64/stable -O code-latest-x64.rpm
     toolbox run -c $TOOLBOX_NAME sudo dnf install -y ./code-latest-x64.rpm
     toolbox run -c $TOOLBOX_NAME rm code-latest-x64.rpm
+
+    echo "Creating desktop shortcut..."
+    DESKTOP_FILE="$HOME/.local/share/applications/vscode-toolbox.desktop"
+    mkdir -p "$(dirname "$DESKTOP_FILE")"
+    cat <<EOF > "$DESKTOP_FILE"
+[Desktop Entry]
+Name=VS Code (Toolbox)
+Comment=Open Visual Studio Code inside $TOOLBOX_NAME toolbox
+Exec=toolbox run -c $TOOLBOX_NAME code
+Icon=com.visualstudio.code
+Type=Application
+Terminal=false
+Categories=Development;IDE;
+EOF
+    chmod +x "$DESKTOP_FILE"
     
     echo "Programming environment setup complete."
     echo "You can enter the toolbox with: toolbox enter -c $TOOLBOX_NAME"
+    echo "A desktop shortcut 'VS Code (Toolbox)' has been created."
     ;;
   *)
     echo "Usage: $0 {cli|zsh|basics|code}"
